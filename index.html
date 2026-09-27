@@ -3,167 +3,289 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculator</title>
+  <title>My Daily Routine</title>
 
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #111;
       font-family: Arial, sans-serif;
     }
 
-    .calculator {
-      width: 330px;
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      color: #222;
       padding: 20px;
-      background: #222;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    #display {
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    #date {
+      text-align: center;
+      color: #777;
+      margin-bottom: 20px;
+    }
+
+    .progress-box {
+      background: white;
+      padding: 18px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    .progress-bar {
       width: 100%;
-      height: 80px;
-      margin-bottom: 15px;
-      padding: 10px;
-      border: none;
-      border-radius: 12px;
-      background: #333;
-      color: white;
-      font-size: 35px;
-      text-align: right;
-      outline: none;
+      height: 12px;
+      background: #ddd;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 10px;
     }
 
-    .buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+    #progress {
+      height: 100%;
+      width: 0%;
+      background: #4caf50;
+      transition: 0.3s;
+    }
+
+    .task {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 7px rgba(0,0,0,0.07);
+    }
+
+    .task input {
+      width: 20px;
+      height: 20px;
+    }
+
+    .task span {
+      flex: 1;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: #999;
+    }
+
+    .add-box {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 13px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
     }
 
     button {
-      height: 65px;
       border: none;
-      border-radius: 15px;
-      background: #444;
-      color: white;
-      font-size: 22px;
+      padding: 12px 16px;
+      border-radius: 10px;
       cursor: pointer;
+      font-weight: bold;
     }
 
-    button:active {
-      transform: scale(0.95);
+    .add-btn {
+      background: #222;
+      color: white;
     }
 
-    .operator {
-      background: #ff9500;
+    .reset-btn {
+      width: 100%;
+      margin-top: 15px;
+      background: #e74c3c;
+      color: white;
     }
 
-    .clear {
-      background: #d93636;
-    }
-
-    .equals {
-      background: #28a745;
+    #message {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="calculator">
+<div class="container">
 
-    <input type="text" id="display" value="0" readonly>
+  <h1>📋 My Daily Routine</h1>
+  <div id="date"></div>
 
-    <div class="buttons">
-      <button class="clear" onclick="clearDisplay()">AC</button>
-      <button onclick="deleteNumber()">⌫</button>
-      <button class="operator" onclick="addOperator('%')">%</button>
-      <button class="operator" onclick="addOperator('/')">÷</button>
+  <div class="progress-box">
+    <strong>Today's Progress</strong>
+    <p id="progressText">0 / 0 completed</p>
 
-      <button onclick="addNumber('7')">7</button>
-      <button onclick="addNumber('8')">8</button>
-      <button onclick="addNumber('9')">9</button>
-      <button class="operator" onclick="addOperator('*')">×</button>
-
-      <button onclick="addNumber('4')">4</button>
-      <button onclick="addNumber('5')">5</button>
-      <button onclick="addNumber('6')">6</button>
-      <button class="operator" onclick="addOperator('-')">−</button>
-
-      <button onclick="addNumber('1')">1</button>
-      <button onclick="addNumber('2')">2</button>
-      <button onclick="addNumber('3')">3</button>
-      <button class="operator" onclick="addOperator('+')">+</button>
-
-      <button onclick="addNumber('0')">0</button>
-      <button onclick="addNumber('.')">.</button>
-      <button class="equals" onclick="calculate()">=</button>
+    <div class="progress-bar">
+      <div id="progress"></div>
     </div>
-
   </div>
 
-  <script>
-    const display = document.getElementById("display");
+  <div id="tasks"></div>
 
-    function addNumber(number) {
-      if (display.value === "0" || display.value === "Error") {
-        display.value = number;
-      } else {
-        display.value += number;
-      }
-    }
+  <div class="add-box">
+    <input id="newTask" type="text" placeholder="Add a task...">
+    <button class="add-btn" onclick="addTask()">Add</button>
+  </div>
 
-    function addOperator(operator) {
-      if (display.value === "Error") {
-        display.value = "0";
-      }
+  <button class="reset-btn" onclick="resetDay()">
+    🔄 Reset Today's Routine
+  </button>
 
-      const last = display.value.slice(-1);
+  <div id="message"></div>
 
-      if ("+-*/%".includes(last)) {
-        display.value = display.value.slice(0, -1) + operator;
-      } else {
-        display.value += operator;
-      }
-    }
+</div>
 
-    function clearDisplay() {
-      display.value = "0";
-    }
+<script>
 
-    function deleteNumber() {
-      if (display.value.length <= 1 || display.value === "Error") {
-        display.value = "0";
-      } else {
-        display.value = display.value.slice(0, -1);
-      }
-    }
+const defaultTasks = [
+  "Wake up",
+  "Fix my bed",
+  "Brush my teeth",
+  "Eat breakfast",
+  "Go to school",
+  "Study",
+  "Do homework",
+  "Exercise",
+  "Take a shower",
+  "Prepare things for tomorrow",
+  "Sleep"
+];
 
-    function calculate() {
-      try {
-        let expression = display.value;
+let tasks = JSON.parse(localStorage.getItem("dailyTasks")) || defaultTasks.map(task => ({
+  name: task,
+  completed: false
+}));
 
-        if (!/^[0-9+\-*/%.() ]+$/.test(expression)) {
-          throw new Error();
-        }
+function saveTasks() {
+  localStorage.setItem("dailyTasks", JSON.stringify(tasks));
+}
 
-        display.value = Function(
-          '"use strict"; return (' + expression + ')'
-        )();
-      } catch {
-        display.value = "Error";
-      }
-    }
-  </script>
+function displayTasks() {
+
+  const taskContainer = document.getElementById("tasks");
+  taskContainer.innerHTML = "";
+
+  tasks.forEach((task, index) => {
+
+    const div = document.createElement("div");
+    div.className = "task";
+
+    div.innerHTML = `
+      <input type="checkbox"
+        ${task.completed ? "checked" : ""}
+        onchange="toggleTask(${index})">
+
+      <span class="${task.completed ? "completed" : ""}">
+        ${task.name}
+      </span>
+    `;
+
+    taskContainer.appendChild(div);
+  });
+
+  updateProgress();
+}
+
+function toggleTask(index) {
+
+  tasks[index].completed = !tasks[index].completed;
+
+  saveTasks();
+  displayTasks();
+
+  if (tasks.length > 0 &&
+      tasks.every(task => task.completed)) {
+
+    document.getElementById("message").textContent =
+      "🔥 You completed everything today!";
+  }
+}
+
+function addTask() {
+
+  const input = document.getElementById("newTask");
+  const taskName = input.value.trim();
+
+  if (taskName === "") return;
+
+  tasks.push({
+    name: taskName,
+    completed: false
+  });
+
+  input.value = "";
+
+  saveTasks();
+  displayTasks();
+}
+
+function updateProgress() {
+
+  const completed = tasks.filter(task => task.completed).length;
+  const total = tasks.length;
+
+  const percentage =
+    total === 0 ? 0 : (completed / total) * 100;
+
+  document.getElementById("progress").style.width =
+    percentage + "%";
+
+  document.getElementById("progressText").textContent =
+    `${completed} / ${total} completed`;
+}
+
+function resetDay() {
+
+  if (!confirm("Reset today's routine?")) return;
+
+  tasks.forEach(task => {
+    task.completed = false;
+  });
+
+  document.getElementById("message").textContent = "";
+
+  saveTasks();
+  displayTasks();
+}
+
+function showDate() {
+
+  const today = new Date();
+
+  document.getElementById("date").textContent =
+    today.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+}
+
+showDate();
+displayTasks();
+
+</script>
 
 </body>
 </html>
