@@ -3,17 +3,17 @@ const noBtn = document.getElementById("noBtn");
 const message = document.getElementById("message");
 
 yesBtn.addEventListener("click", () => {
-  message.textContent = "YAY! ❤️🥰";
+  message.textContent = "ALAM MO YAN 😎🔥";
 });
 
 noBtn.addEventListener("click", () => {
-  message.textContent = "Are you sure? 😭";
+  message.textContent = "YAKS KA DIN 😭😂";
 
   const maxX = window.innerWidth - noBtn.offsetWidth;
   const maxY = window.innerHeight - noBtn.offsetHeight;
 
-  const randomX = Math.random() * maxX;
-  const randomY = Math.random() * maxY;
+  const randomX = Math.max(0, Math.random() * maxX);
+  const randomY = Math.max(0, Math.random() * maxY);
 
   noBtn.style.position = "fixed";
   noBtn.style.left = randomX + "px";
